@@ -1,0 +1,5 @@
+# Only these public files may enter a source release.
+global-exclude *
+include pyproject.toml MANIFEST.in README.md SKILL.md AGENTS.md
+include requirements.txt install.py dcinside_cli.py dcinside_http_login.py
+include scripts/dcinside agents/openai.yaml tests/test_dcinside.py

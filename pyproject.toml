@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcinside-http"
+dynamic = ["version", "dependencies"]
+description = "Structured mobile-web DCInside HTTP CLI for terminal agents"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Repository = "https://github.com/yongop/dcinside-http"
+
+[project.scripts]
+dcinside = "dcinside_cli:main"
+
+[tool.setuptools]
+py-modules = ["dcinside_cli", "dcinside_http_login"]
+
+[tool.setuptools.dynamic]
+version = {attr = "dcinside_cli.VERSION"}
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.data-files]
+"share/dcinside" = ["SKILL.md", "README.md"]
