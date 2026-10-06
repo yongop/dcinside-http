@@ -18,7 +18,7 @@ import time
 import requests
 from dcinside_http_login import DCInsideHTTP, LoginError
 
-VERSION = "0.4.2"
+VERSION = "0.4.3"
 SESSION_TTL = 7 * 24 * 60 * 60
 SUPPORTED = ["capabilities", "instructions", "list", "read", "comments", "comment", "login", "status", "logout"]
 

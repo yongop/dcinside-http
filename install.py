@@ -48,7 +48,7 @@ def install(target, *, skip_dependencies=False):
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source / name, destination)
     (target / "scripts/dcinside").chmod(0o755)
-    manifest = {"package": "dcinside-http", "version": "0.4.2", "files": {name: digest(target / name) for name in FILES}}
+    manifest = {"package": "dcinside-http", "version": "0.4.3", "files": {name: digest(target / name) for name in FILES}}
     (target / MARKER).write_text(json.dumps(manifest, indent=2) + "\n")
     if not skip_dependencies:
         environment = target / ".venv"

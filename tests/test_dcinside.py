@@ -302,6 +302,7 @@ class CommentSubmissionTests(unittest.TestCase):
         result=self.client.create_comment(10,'fixture')
         self.assertTrue(result['dry_run'])
         self.assertEqual(self.calls,[])
+        self.assertIsNone(self.client.session.cookies.get('cmtw_chk'))
 
     def test_send_once_and_verify_own_new_comment(self):
         self.client.read_comments=lambda *a: {'comments':[{'comment_id':22,'text':'fixture','is_mine':True}]}
@@ -319,6 +320,25 @@ class CommentSubmissionTests(unittest.TestCase):
         self.assertNotIn('service_code',payload)
         self.assertNotIn('g-recaptcha-response',payload)
         self.assertEqual(result['comment_url'],self.client.gallery_url+'/10?comment=22')
+
+    def test_submit_cookie_matches_server_key_and_expires_after_three_minutes(self):
+        self.client.session.cookies.set('cmtw_chk','stale-key',domain='m.dcinside.com',path='/')
+        self.client.read_comments=lambda *a:{'comments':[{'comment_id':22,'text':'fixture','is_mine':True}]}
+        with patch('dcinside_http_login.time.time',return_value=2_000_000_000):
+            self.client.create_comment(10,'fixture',send=True)
+        cookies=[c for c in self.client.session.cookies if c.name=='cmtw_chk']
+        self.assertEqual(len(cookies),1)
+        cookie=cookies[0]
+        self.assertEqual(cookie.value,'fixture-key')
+        self.assertEqual(cookie.domain,'.dcinside.com')
+        self.assertEqual(cookie.path,'/')
+        self.assertEqual(cookie.expires,2_000_000_180)
+        self.assertTrue(cookie.secure)
+        call=self.submissions()[0]
+        prepared=self.client.session.prepare_request(requests.Request('POST',call[1],data=call[2]['data'],headers=call[2]['headers']))
+        self.assertIn('cmtw_chk=fixture-key',prepared.headers['Cookie'])
+        from urllib.parse import parse_qs
+        self.assertEqual(parse_qs(prepared.body)['con_key'],['fixture-key'])
 
     def test_existing_own_text_is_not_posted_twice(self):
         self.client._read_comments_from_page=lambda *a: {'comments':[{'comment_id':22,'text':'fixture','is_mine':True}]}
@@ -353,6 +373,7 @@ class CommentSubmissionTests(unittest.TestCase):
         with self.assertRaises(core.LoginError) as caught:self.client.create_comment(10,'fixture',send=True)
         self.assertEqual(caught.exception.details['stage'],'comment_preflight')
         self.assertEqual(self.submissions(),[])
+        self.assertIsNone(self.client.session.cookies.get('cmtw_chk'))
 
     def test_target_mismatch_stops_before_network(self):
         self.soup.select_one('#no')['value']='11'

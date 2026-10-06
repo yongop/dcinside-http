@@ -475,7 +475,14 @@ class DCInsideHTTP:
                 or not isinstance(key, str) or not re.fullmatch(r"[a-zA-Z0-9_-]{1,512}", key)):
             raise LoginError("Mobile comment preflight was rejected. No comment was sent.", "WRITE_REJECTED")
         payload["con_key"] = key
-        # Do not manufacture the site's browser/device bot-check cookies.
+        # Complete the mobile site's double-submit token handshake. The value
+        # is the server-issued preflight key, not a locally generated token.
+        for cookie in list(self.session.cookies):
+            if (cookie.name == "cmtw_chk" and
+                    cookie.domain.lstrip(".") in ("dcinside.com", "m.dcinside.com")):
+                self.session.cookies.clear(cookie.domain, cookie.path, cookie.name)
+        self.session.cookies.set("cmtw_chk", key, domain=".dcinside.com", path="/",
+                                 expires=int(time.time()) + 180, secure=True)
         try:
             posted = self._request("POST", MOBILE + "/ajax/comment-write", data=payload, headers=headers)
         except requests.RequestException:

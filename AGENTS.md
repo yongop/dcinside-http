@@ -2,7 +2,7 @@
 
 For DCInside tasks in this project, read `SKILL.md` once and use `scripts/dcinside`.
 This is an HTTP tool; supported operations do not need browser automation.
-Version 0.4.2 targets mobile web (`https://m.dcinside.com`) with a mobile User-Agent,
+Version 0.4.3 targets mobile web (`https://m.dcinside.com`) with a mobile User-Agent,
 mobile HTML parsers, and mobile AJAX endpoints. Do not fall back to PC pages for login
 verification; older PC sessions may require login again for mobile web.
 

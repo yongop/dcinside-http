@@ -7,19 +7,19 @@
 공개 저장소: [yongop/dcinside-http](https://github.com/yongop/dcinside-http). macOS/Linux에서 [uv](https://docs.astral.sh/uv/getting-started/installation/)가 있으면 아래 한 줄로 패키지와 의존성을 내려받고 최신글을 조회합니다. Python 3.9 이상을 사용하며 필요한 Python이 없으면 uv가 준비합니다. Git 없이도 받도록 GitHub 소스 압축파일 URL을 사용합니다.
 
 ```sh
-uvx --from https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.2.tar.gz dcinside list --gallery thesingularity --limit 5 --anonymous
+uvx --from https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.3.tar.gz dcinside list --gallery thesingularity --limit 5 --anonymous
 ```
 
 `uvx`는 전용 환경에 도구를 준비해 실행하며 다음 실행에 재사용합니다. `list` 뒤의 명령과 인자만 바꾸면 됩니다. 다른 에이전트에 아래 명령으로 지침을 읽도록 전달하세요. 지침도 JSON으로 출력합니다.
 
 ```sh
-uvx --from https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.2.tar.gz dcinside instructions
+uvx --from https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.3.tar.gz dcinside instructions
 ```
 
 자주 쓴다면 영구 설치할 수 있습니다. 실행 파일 폴더가 PATH에 없으면 uv가 안내하는 경로를 사용하거나 `uv tool update-shell` 후 터미널을 다시 여세요.
 
 ```sh
-uv tool install https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.2.tar.gz
+uv tool install https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.3.tar.gz
 dcinside capabilities
 dcinside list --gallery thesingularity --limit 5 --anonymous
 ```
@@ -27,7 +27,7 @@ dcinside list --gallery thesingularity --limit 5 --anonymous
 `uv` 없이 Python만 있는 환경에서도 설치할 수 있습니다.
 
 ```sh
-python3 -m venv ~/.local/share/dcinside-http/venv && ~/.local/share/dcinside-http/venv/bin/python -m pip install https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.2.tar.gz && ~/.local/share/dcinside-http/venv/bin/dcinside capabilities
+python3 -m venv ~/.local/share/dcinside-http/venv && ~/.local/share/dcinside-http/venv/bin/python -m pip install https://github.com/yongop/dcinside-http/archive/refs/tags/v0.4.3.tar.gz && ~/.local/share/dcinside-http/venv/bin/dcinside capabilities
 ```
 
 이 방식은 CLI를 설치합니다. 각 에이전트의 스킬 목록에 등록하려면 아래 소스/스킬 설치 방식으로 `SKILL.md`를 연결하세요. 공개 조회는 로그인 없이 가능하며 로그인은 사용할 컴퓨터에서 따로 수행합니다.
@@ -43,7 +43,7 @@ python3 install.py
 다른 컴퓨터에서 Git으로 소스와 스킬을 함께 받는 예:
 
 ```sh
-git clone --branch v0.4.2 --depth 1 https://github.com/yongop/dcinside-http.git && cd dcinside-http && python3 install.py
+git clone --branch v0.4.3 --depth 1 https://github.com/yongop/dcinside-http.git && cd dcinside-http && python3 install.py
 ```
 
 기본 설치 위치는 `${CODEX_HOME:-~/.codex}/skills/dcinside`입니다. 설치 프로그램이 필요한 파일을 복사하고 전용 `.venv`에 의존성을 설치합니다. 다른 위치에는 `python3 install.py --target /원하는/skills/dcinside`로 설치할 수 있습니다. 같은 명령으로 업데이트합니다. 기존 설치 파일을 직접 수정한 경우 덮어쓰지 않고 중단합니다.
@@ -76,7 +76,7 @@ git clone --branch v0.4.2 --depth 1 https://github.com/yongop/dcinside-http.git 
 - `read`: 본문 텍스트와 이미지·동영상 등 첨부 링크. 지연 로딩 이미지의 `data-original`을 우선해 로딩용 이미지 대신 원본 링크를 반환합니다. 이미지 안의 글자는 자동 OCR하지 않습니다.
 - `comments`: 모바일 댓글 API에서 한 페이지의 댓글 텍스트, 댓글 번호, 작성자 닉네임, 답글 정보, 미디어 링크를 읽습니다. 최신순으로 조회하며 답글은 원댓글 아래에 묶입니다. IP와 계정 식별 코드는 출력하지 않습니다.
 - `login`, `status`, `logout`: HTTP 로그인, 서버에서 실제 로그인 상태 확인, 이 도구의 로컬 세션 삭제.
-- `comment POST_ID --text-file FILE`: 작성 전 미리보기. 사용자가 지정한 대상과 내용으로 등록하려면 `--send` 추가. `--text`로 직접 전달할 수도 있습니다. 모바일 로그인 필요. 모바일 폼·CSRF 토큰을 확인하고 전송 시에만 `/ajax/access`에서 토큰을 받아 `/ajax/comment-write`에 한 번 제출합니다. 미리보기의 `ready:true`는 폼 검사 결과이며 서버 수락을 보장하지 않습니다. 등록 후 계정 식별 정보가 일치하는 새 본인 댓글을 다시 조회해 확인합니다. 이미 본인의 동일 내용이 조회되면 중복 등록하지 않습니다.
+- `comment POST_ID --text-file FILE`: 작성 전 미리보기. 사용자가 지정한 대상과 내용으로 등록하려면 `--send` 추가. `--text`로 직접 전달할 수도 있습니다. 모바일 로그인 필요. 모바일 폼·CSRF 토큰을 확인하고 전송 시에만 `/ajax/access`에서 토큰을 받습니다. 서버가 발급한 `Block_key`를 폼의 `con_key`와 3분 만료의 `cmtw_chk` 쿠키에 함께 넣어 `/ajax/comment-write`에 한 번 제출합니다. 미리보기의 `ready:true`는 폼 검사 결과이며 서버 수락을 보장하지 않습니다. 등록 후 계정 식별 정보가 일치하는 새 본인 댓글을 다시 조회해 확인합니다. 이미 본인의 동일 내용이 조회되면 중복 등록하지 않습니다.
 - 기본 갤러리는 `thesingularity`(특이점이 온다). 일반 갤러리는 `--kind main`, 마이너는 `--kind minor`.
 - 글 작성, 개별 댓글에 대한 답글, 수정·삭제, 추천, 업로드, 미니·인물 갤러리는 미지원입니다. `write`는 등록하지 않고 `UNSUPPORTED_OPERATION`을 반환합니다.
 - 댓글 전송 후 `WRITE_UNCONFIRMED`가 나오면 이미 등록됐을 가능성이 있으므로 재전송하지 말고 댓글 목록을 확인하세요. `USER_ACTION_REQUIRED`는 CAPTCHA 등 추가 인증이 필요하다는 뜻입니다. 댓글 응답의 `error.details.version`은 `v2`, `v3`, `unknown`을 구분합니다. v3는 백그라운드 검사이므로 이미지 퍼즐을 직접 풀어야 한다는 뜻은 아닙니다. 서버가 요청한 인증은 우회하지 않습니다.
@@ -111,8 +111,10 @@ python3 -m unittest discover -s tests -v
 
 0.4.1 실사이트 인증 검증(2026-10-07): 사용자가 터미널에서 비밀번호를 입력한 뒤 모바일 로그인, 세션 저장, 별도 `status` 명령의 인증 유지, 인증한 계정의 댓글 미리보기까지 확인했습니다. 비밀번호 변경 안내의 계속 진행 처리, 기본 체크된 로그인 항목 전송, 모바일 요청 헤더를 보완했습니다.
 
-사용자가 지정한 같은 글에 승인된 두 문구를 각각 한 번 제출했지만, 서버는 두 요청 모두 “등록하기에 적합한 단어가 아닙니다.”라고 거절했습니다. 댓글 목록에서도 등록을 확인하지 못했습니다. 특정 문구가 금칙어인지, 다른 요청 검사에서 거절됐는지는 확인되지 않았으며 댓글 등록 성공은 여전히 미검증입니다. 사용자의 댓글을 임의 변경하거나 자동 재전송하지 않습니다. CAPTCHA 면제를 보장하지 않으며 브라우저·기기 검사용 쿠키를 임의 생성하지 않습니다.
+댓글 전송 실패 조사(2026-10-07): `cmtw_chk` 없이 보낸 두 승인 문구는 모두 “등록하기에 적합한 단어가 아닙니다.”로 거절됐습니다. 사이트 스크립트에서 댓글 전송 전에 `Block_key`를 이 쿠키에 넣는 단계가 있음을 확인했고, 사용자의 요청에 따라 같은 서버 발급 키를 쿠키와 폼에 함께 보내도록 수정했습니다. 쿠키 범위는 `.dcinside.com`·`/`, 만료는 180초이며 HTTPS에서만 전송합니다. 다른 도메인/경로의 오래된 동일 이름 쿠키가 이중 전송되지 않게 정리합니다.
 
-자동 테스트 46개는 로그인 폼 체크박스의 기본값·비밀번호 변경 안내의 안전한 계속 진행·헤더/리다이렉트 처리·댓글 전송 값·개인 정보 보호·중복 및 재시도 방지를 포함합니다.
+수정 후 같은 “테스트 댓글입니다.”를 같은 글에 한 번 전송해 등록에 성공했고, 댓글 번호 `5930464`와 본인 계정의 새 댓글을 재조회해 `verified:true`로 확인했습니다. 쿠키 추가 전후에 같은 문구의 결과가 거절에서 성공으로 바뀌어, 이번 실패 원인은 `cmtw_chk` 누락으로 확인됐습니다. 사용자의 댓글을 임의 변경하거나 불명확한 결과를 자동 재전송하지 않습니다. CAPTCHA를 요구하면 여전히 중단하며, CAPTCHA 응답을 생성하지 않습니다.
+
+자동 테스트 50개가 통과했습니다. `cmtw_chk`와 `con_key` 일치, 180초 만료·도메인·경로·HTTPS 전송, 오래된 쿠키 교체, 미리보기/CAPTCHA 사전 거절 시 새 쿠키를 만들지 않는 동작도 확인합니다. 패키지 사용 지침, 로그인 폼·안내 처리, 개인 정보 보호, 중복 및 재시도 방지 검사도 포함합니다.
 
 이전 0.3.1의 PC 댓글 전송은 2026-10-06에 서버가 reCAPTCHA v3를 요구해 거절했으며, 등록 완료는 확인하지 못했습니다. 모바일 전환은 접근 경로와 폼 구현의 변경이며 이 인증을 우회하는 기능이 아닙니다.
